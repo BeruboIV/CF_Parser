@@ -12,3 +12,4 @@ node codeforces.js $1
 mkdir $1
 
 mv *.in *.out $1
+cp Makefile $1
