@@ -36,6 +36,12 @@ OUTPUTS=($(ls ${FILE_NAME}*.out))
 
 PASSED=0
 
+function print_input() {
+	echo -e "--------------------\nInput:"
+	cat ${INPUTS[$1]}
+	echo -e "\n--------------------"
+}
+
 function print_current_output() {
 	echo -e "--------------------\nOutput:"
 	cat OUTPUT.res
@@ -54,6 +60,8 @@ echo $TOTAL_TESTS
 for (( i=1; i<=1; i++ ))
 do
 	echo "Running ${INPUTS[i - 1]}:"
+	print_input $(( $i-1 ))
+	
 	/usr/bin/time -f "Time: %E" ./${FILE_NAME} < "${INPUTS[i - 1]}" > "OUTPUT.res" 
 
 	print_current_output
