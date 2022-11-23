@@ -7,9 +7,10 @@ if [ $# -ne 1 ]; then
     exit -1
 fi
 
+mkdir -p $1
+cp Makefile $1
+cp Templates/debug.h $1 
+
 node codeforces.js $1
 
-mkdir $1
-
 mv *.in *.out $1
-cp Makefile $1
