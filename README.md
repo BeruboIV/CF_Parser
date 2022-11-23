@@ -8,6 +8,7 @@ Parse test cases from codeforces and test them against your solutions.
 ```bash
 git clone https://github.com/BeruboIV/CF_Parser
 cd CF_Parser
+npm install
 Move all the bash script (.sh) files to /usr/local/bin
 Remove the .sh extension from the files
 ```
