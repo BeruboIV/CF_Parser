@@ -17,6 +17,7 @@ async function scrapeProblem(problem_letter) {
                 return child.id !== "";
             });
             let num_scraped = scraped.length;
+            // The elements were repeated twice, so remove the extra elements
             for (let i = 0; i < num_scraped / 2; i++) scraped.pop();
             return scraped.map((ele) => ele.innerText);
             // return Array.from(samples).map((child) => child.innerText);
