@@ -3,8 +3,8 @@ const fs = require("fs");
 
 const contest_id = process.argv[2];
 
-async function scrapeProblem(problem_letter) {
-    const url = `https://atcoder.jp/contests/${contest_id}/tasks/${contest_id}_${problem_letter.toLowerCase()}`;
+async function scrapeProblem(Problem) {
+    const url = Problem.Url;
     console.log(url);
     try {
         const browser = await puppeteer.launch();
@@ -28,12 +28,12 @@ async function scrapeProblem(problem_letter) {
         samples_scraped.map((ele, idx) => {
             if (idx % 2 == 0) {
                 // Input
-                fs.writeFile(`${problem_letter}-${id}.in`, ele, (err) => {
+                fs.writeFile(`${Problem.Problem_letter}-${id}.in`, ele, (err) => {
                     if (err) throw err;
                 });
             } else {
                 // Output
-                fs.writeFile(`${problem_letter}-${id}.out`, ele, (err) => {
+                fs.writeFile(`${Problem.Problem_letter}-${id}.out`, ele, (err) => {
                     if (err) throw err;
                 });
                 id++;
@@ -48,26 +48,29 @@ async function scrapeProblem(problem_letter) {
 
 async function scrapeSite() {
     const url = `https://atcoder.jp/contests/${contest_id}/tasks`;
+    console.log(url);
     try {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.goto(url, { waitUntil: "networkidle0" });
 
         // Returns all the problem letters
-        const problem_letters = await page.evaluate(() => {
+        const problems = await page.evaluate(() => {
             const table = document.querySelectorAll("table")[0];
             const rows = table.rows.length;
             const letters = [];
 
             for (let i = 1; i < rows; i++) {
-                letters.push(table.rows[i].cells[0].innerText);
+                letters.push({Problem_letter: table.rows[i].cells[0].innerText, Url: table.rows[i].cells[0].firstChild.href });
             }
 
             return letters;
         });
 
-        for (problem_letter of problem_letters) {
-            scrapeProblem(problem_letter);
+        // console.log(problem_letters);
+
+        for (problem of problems) {
+            scrapeProblem(problem);
         }
 
         await browser.close();
