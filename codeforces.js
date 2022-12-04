@@ -3,10 +3,9 @@ const fs = require("fs");
 
 const contest_id = process.argv[2];
 
-async function scrapeProblem(problem_letter) {
+async function scrapeProblem(browser, problem_letter) {
     const url = `https://codeforces.com/contest/${contest_id}/problem/${problem_letter}`;
     try {
-        const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.goto(url, { waitUntil: "networkidle0" });
 
@@ -35,7 +34,6 @@ async function scrapeProblem(problem_letter) {
                 return output_data;
             }
         });
-        await browser.close();
     } catch (e) {
         console.log(e);
     }
@@ -61,10 +59,15 @@ async function scrapeSite() {
             return letters;
         });
 
+        const promises = [];
+
         for (problem_letter of problem_letters) {
-            scrapeProblem(problem_letter);
+            promises.push(scrapeProblem(browser, problem_letter));
         }
 
+        await Promise.all(promises);
+
+        // Parse all the test cases and then close the browser.
         await browser.close();
     } catch (e) {
         console.log(e);
