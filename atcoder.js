@@ -1,7 +1,24 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
+require('dotenv').config();
 
 const contest_id = process.argv[2];
+
+async function login(browser, page) {
+    const url = `https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2F`;
+    console.log("Logging in..", url);
+    try {
+        await page.goto(url, { waitUntil: "networkidle0" });
+
+        await page.type('#username', process.env.USERNAME);
+        await page.type("#password", process.env.PASSWORD);
+        await page.click("#submit");
+
+    } catch (e) {
+        console.log("Login failed...");
+        console.log(e);
+    }
+}
 
 async function scrapeProblem(Problem) {
     const url = Problem.Url;
@@ -9,6 +26,7 @@ async function scrapeProblem(Problem) {
     try {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
+        await login(browser, page);
         await page.goto(url, { waitUntil: "networkidle0" });
 
         const samples_scraped = await page.evaluate(() => {
@@ -40,7 +58,9 @@ async function scrapeProblem(Problem) {
             }
             return ele;
         });
+
         await browser.close();
+        
     } catch (e) {
         console.log(e);
     }
@@ -52,7 +72,10 @@ async function scrapeSite() {
     try {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
+        await login(browser, page);
         await page.goto(url, { waitUntil: "networkidle0" });
+
+        // await page.screenshot({ path: "./screenshot.png", fullPage: true});
 
         // Returns all the problem letters
         const problems = await page.evaluate(() => {
@@ -67,16 +90,18 @@ async function scrapeSite() {
             return letters;
         });
 
-        // console.log(problem_letters);
+        console.log(problems);
 
         for (problem of problems) {
             scrapeProblem(problem);
         }
 
         await browser.close();
+
     } catch (e) {
         console.log(e);
     }
 }
 
 scrapeSite();
+// login();
