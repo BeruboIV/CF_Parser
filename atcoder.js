@@ -20,13 +20,13 @@ async function login(browser, page) {
     }
 }
 
-async function scrapeProblem(Problem) {
+async function scrapeProblem(browser, Problem) {
     const url = Problem.Url;
     console.log(url);
     try {
-        const browser = await puppeteer.launch();
+        // const browser = await puppeteer.launch();
         const page = await browser.newPage();
-        await login(browser, page);
+        // await login(browser, page);
         await page.goto(url, { waitUntil: "networkidle0" });
 
         const samples_scraped = await page.evaluate(() => {
@@ -59,8 +59,8 @@ async function scrapeProblem(Problem) {
             return ele;
         });
 
-        await browser.close();
-        
+        // await browser.close();
+
     } catch (e) {
         console.log(e);
     }
@@ -91,10 +91,13 @@ async function scrapeSite() {
         });
 
         console.log(problems);
+        const promises = []
 
         for (problem of problems) {
-            scrapeProblem(problem);
+            promises.push(scrapeProblem(browser, problem));
         }
+
+        await Promise.all(promises);    // All the promises must be resolved before closing the browser
 
         await browser.close();
 
@@ -104,4 +107,3 @@ async function scrapeSite() {
 }
 
 scrapeSite();
-// login();
