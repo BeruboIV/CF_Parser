@@ -45,7 +45,7 @@ function print_input() {
 function print_current_output() {
 	echo -e "--------------------\nOutput:"
 	cat OUTPUT.res
-	echo 
+	echo
 }
 
 function print_expected_output() {
@@ -57,11 +57,11 @@ function print_expected_output() {
 # Running against samples
 TOTAL_TESTS=${#INPUTS[@]}
 echo $TOTAL_TESTS
-for (( i=1; i<=1; i++ ))
+for (( i=1; i<=$TOTAL_TESTS; i++ ))
 do
 	echo "Running ${INPUTS[i - 1]}:"
 	print_input $(( $i-1 ))
-	
+
 	/usr/bin/time -f "Time: %E" ./${FILE_NAME} < "${INPUTS[i - 1]}" > "OUTPUT.res" 
 
 	print_current_output
