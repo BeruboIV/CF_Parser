@@ -4,7 +4,6 @@ using ll = long long int;
 using ld = long double;
 typedef priority_queue<ll, vector<ll>, greater<ll>> minheap;
 typedef priority_queue<ll> maxheap;
-#define IOS ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 
 #ifdef BeruboIV
 #include "debug.h"
@@ -17,7 +16,10 @@ void solve(){
 
 int main()
 {
-    IOS
+    ios_base::sync_with_stdio(false);
+#ifndef BeruboIV
+    cin.tie(NULL);
+#endif
     int t = 1;
     cin >> t;
     while(t--){
