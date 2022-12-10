@@ -31,8 +31,8 @@ function print_exit_code() {
     echo "The program finished with exit code $?"
 }
 
-INPUTS=($(ls  ${FILE_NAME}*.in))
-OUTPUTS=($(ls ${FILE_NAME}*.out))
+INPUTS=($(ls  ${FILE_NAME}-*.in))
+OUTPUTS=($(ls ${FILE_NAME}-*.out))
 
 PASSED=0
 
